@@ -5,7 +5,11 @@ import org.slf4j.LoggerFactory
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.http.HttpEntity
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("exchanges")
@@ -15,30 +19,13 @@ class ExchangeController(
 
     private val log = LoggerFactory.getLogger(javaClass)
 
-    @GetMapping
-    fun getHealthcheck():String {
-        log.info("running!")
-        return "ok"
-    }
-
-    @PostMapping("{exchange}/{routingKey}")
-    fun postOnExchange(
-        @PathVariable exchange: String,
-        @PathVariable routingKey: String,
-        @RequestBody message: String
-    ): HttpEntity<Any?> {
-        log.info("sending message $message")
-        rabbitTemplate.convertAndSend(exchange, routingKey, message)
-        return ResponseEntity.ok().build()
-    }
-
-    @PostMapping("json/{exchange}/{routingKey}")
-    fun postJsonOnExchange(
+    @PostMapping("persons/{exchange}/{routingKey}")
+    fun postPersonOnExchange(
         @PathVariable exchange: String,
         @PathVariable routingKey: String,
         @RequestBody message: Person
     ): HttpEntity<Any?> {
-        log.info("sending message $message")
+        log.info("sending message $message to exchange $exchange with routing key $routingKey")
         rabbitTemplate.convertAndSend(exchange, routingKey, message)
         return ResponseEntity.ok().build()
     }
