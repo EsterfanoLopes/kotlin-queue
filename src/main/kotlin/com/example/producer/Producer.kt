@@ -8,7 +8,7 @@ import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 
 @SpringBootApplication
-class Queue {
+class Producer {
 
     @Bean
     fun messageConverter(objectMapper: ObjectMapper): MessageConverter {
@@ -17,5 +17,5 @@ class Queue {
 }
 
 fun main(args: Array<String>) {
-    runApplication<Queue>(*args)
+    runApplication<Producer>(*args)
 }
