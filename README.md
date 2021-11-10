@@ -24,5 +24,12 @@ Create exchanges and queues with rabbitAdmin and add DLQ queues
 
 Example:
 ```curl
-curl -X POST "http://localhost:8080/exchanges/persons/DIRECT-EXCHANGE-ADVANCED/TO-FIRST-QUEUE" -w "HTTP Response code%{http_code}" -H "accept: */*" -H "Content-Type: application/json" -d '{"name":"Iundarigun","collageCompletedYear":2005,"bornAt":"1980-08-07","active":true}'
+curl --location --request POST 'localhost:8080/exchanges/persons/DIRECT-EXCHANGE-ADVANCED/TO-FIRST-QUEUE' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "name": "Iundarigun",
+    "collageCompletedYear": 2005,
+    "bornAt": "1980-08-07",
+    "active": true
+}'
 ```

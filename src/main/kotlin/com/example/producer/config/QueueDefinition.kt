@@ -1,4 +1,4 @@
-package br.com.devcave.rabbit.config
+package com.example.producer.config
 
 object QueueDefinition {
     const val FIRST_QUEUE = "FIRST-QUEUE-ADVANCED"

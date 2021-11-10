@@ -1,32 +1,33 @@
-package br.com.devcave.rabbit.controller
+package com.example.producer.controller
 
-import br.com.devcave.rabbit.domain.Person
+import com.example.producer.model.Person
+import com.example.producer.service.PersonService
 import org.slf4j.LoggerFactory
-import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.http.HttpEntity
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+import reactor.core.publisher.Mono
 
 @RestController
-@RequestMapping("exchanges")
+@RequestMapping("/exchanges")
 class ExchangeController(
-    private val rabbitTemplate: RabbitTemplate
+    private val personService: PersonService
 ) {
 
     private val log = LoggerFactory.getLogger(javaClass)
 
-    @PostMapping("persons/{exchange}/{routingKey}")
+    @GetMapping()
+    fun getHealthcheck(): HttpEntity<Any?> {
+        return ResponseEntity.ok().build()
+    }
+
+    @PostMapping("/persons/{exchange}/{routingKey}")
     fun postPersonOnExchange(
         @PathVariable exchange: String,
         @PathVariable routingKey: String,
-        @RequestBody message: Person
-    ): HttpEntity<Any?> {
-        log.info("sending message $message to exchange $exchange with routing key $routingKey")
-        rabbitTemplate.convertAndSend(exchange, routingKey, message)
-        return ResponseEntity.ok().build()
+        @RequestBody person: Person
+    ): Mono<Person> {
+        log.info("sending message $person to exchange $exchange with routing key $routingKey")
+        return personService.saveAndEnqueue(exchange, routingKey, person)
     }
 }

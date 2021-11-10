@@ -1,4 +1,4 @@
-package br.com.devcave.rabbit.config
+package com.example.producer.config
 
 import org.springframework.amqp.core.Binding
 import org.springframework.amqp.core.Exchange
