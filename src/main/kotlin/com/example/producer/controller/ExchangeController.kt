@@ -12,41 +12,36 @@ import reactor.core.publisher.Mono
 import java.util.UUID
 
 @RestController
-@RequestMapping("/exchanges")
+@RequestMapping("api/v2/person")
 class ExchangeController(
     private val personService: PersonService
 ) {
 
     private val log = LoggerFactory.getLogger(javaClass)
 
-    @GetMapping()
-    fun getHealthcheck(): HttpEntity<Any?> {
-        return ResponseEntity.ok().build()
-    }
-
-    @PostMapping("/persons/{exchange}/{routingKey}")
+    @PostMapping("/{exchange}/{routingKey}")
     fun postPersonOnExchange(
-        @PathVariable exchange: String,
-        @PathVariable routingKey: String,
+        @PathVariable(required = true) exchange: String,
+        @PathVariable(required = true) routingKey: String,
         @RequestBody person: Person
     ): Mono<Person> {
         log.info("sending message $person to exchange $exchange with routing key $routingKey")
         return personService.createAndEnqueue(exchange, routingKey, person)
     }
 
-    @GetMapping("/persons")
+    @GetMapping
     fun getPersons(): Flux<Person> {
         return personService.getPersons()
     }
 
-    @GetMapping("/persons/{externalId}")
+    @GetMapping("{externalId}")
     fun getPerson(
         @PathVariable(required = true) externalId: UUID,
     ): Mono<Person> {
         return personService.getPersonByExternalId(externalId)
     }
 
-    @PutMapping("/persons/{externalId}")
+    @PutMapping("{externalId}")
     fun putPerson(
         @PathVariable(required = true) externalId: UUID,
         @RequestBody person: PersonUpdate
@@ -54,7 +49,7 @@ class ExchangeController(
         return personService.updatePersonByExternalId(externalId, person)
     }
 
-    @DeleteMapping("/persons/{externalId}")
+    @DeleteMapping("{externalId}")
     suspend fun deletePerson(
         @PathVariable(required = true) externalId: UUID,
     ): HttpEntity<Any?> {
