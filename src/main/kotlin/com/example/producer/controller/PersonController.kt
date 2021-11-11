@@ -13,7 +13,7 @@ import java.util.UUID
 
 @RestController
 @RequestMapping("api/v2/person")
-class ExchangeController(
+class PersonController(
     private val personService: PersonService
 ) {
 
