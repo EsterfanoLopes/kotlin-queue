@@ -3,6 +3,7 @@ package com.example.producer.service
 import com.example.producer.model.Person
 import com.example.producer.model.PersonUpdate
 import com.example.producer.repository.PersonRepository
+import kotlinx.coroutines.reactive.awaitFirst
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -20,6 +21,7 @@ class PersonService(
 
     fun createAndEnqueue(exchange: String, routingKey: String, person: Person): Mono<Person> {
         try {
+            //FIXME: save first, then send message with id
             rabbitTemplate.convertAndSend(exchange, routingKey, person)
             return personRepository.save(person)
         } catch (e: IllegalArgumentException) {
