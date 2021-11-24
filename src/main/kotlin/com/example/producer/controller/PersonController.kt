@@ -20,11 +20,11 @@ class PersonController(
     private val log = LoggerFactory.getLogger(javaClass)
 
     @PostMapping("/{exchange}/{routingKey}")
-    fun postPersonOnExchange(
+    suspend fun postPersonOnExchange(
         @PathVariable(required = true) exchange: String,
         @PathVariable(required = true) routingKey: String,
         @RequestBody person: Person
-    ): Mono<Person> {
+    ): Person {
         log.info("sending message $person to exchange $exchange with routing key $routingKey")
         return personService.createAndEnqueue(exchange, routingKey, person)
     }

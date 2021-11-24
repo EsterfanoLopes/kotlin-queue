@@ -19,11 +19,11 @@ class PersonService(
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
-    fun createAndEnqueue(exchange: String, routingKey: String, person: Person): Mono<Person> {
+    suspend fun createAndEnqueue(exchange: String, routingKey: String, person: Person): Person {
         try {
-            //FIXME: save first, then send message with id
-            rabbitTemplate.convertAndSend(exchange, routingKey, person)
-            return personRepository.save(person)
+            val saved = personRepository.save(person).awaitFirst()
+            rabbitTemplate.convertAndSend(exchange, routingKey, saved)
+            return saved
         } catch (e: IllegalArgumentException) {
             log.error("Error delivering person message and saving it $e")
             throw e
